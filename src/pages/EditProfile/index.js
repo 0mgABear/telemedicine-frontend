@@ -1,18 +1,15 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Button,
   Container,
   FormControl,
-  FormLabel,
   Grid,
-  Input,
   InputAdornment,
   InputLabel,
   MenuItem,
-  Paper,
   Select,
   TextField,
 } from "@mui/material";
@@ -24,13 +21,14 @@ const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export default function CreateProfile() {
+export default function EditProfile() {
   const navigate = useNavigate();
   const { getAccessTokenSilently, user } = useAuth0();
   const [accessToken, setAccessToken] = useState(null);
   const [formValues, setFormValues] = useState({});
   const [openSuccess, setOpenSuccess] = useState(false);
   const [openFailure, setOpenFailure] = useState(false);
+  const [disableEditButton, setDisableEditButton] = useState(false);
 
   const handleInputChange = (e) => {
     setFormValues({ ...formValues, [e.target.id]: e.target.value });
@@ -54,14 +52,23 @@ export default function CreateProfile() {
     setOpenFailure(false);
   };
 
+  const moveToHomePage = () => {
+    navigate("/home");
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post(`http://localhost:3000/createpatient`, formValues, configs)
+      .put(
+        `http://localhost:3000/editpatient/${user.email}`,
+        formValues,
+        configs
+      )
       .then(function (response) {
         console.log(response);
         setOpenSuccess(true);
-        navigate("/home");
+        setDisableEditButton(true);
+        setTimeout(moveToHomePage, 3000);
       })
       .catch(function (error) {
         console.log(error);
@@ -100,7 +107,7 @@ export default function CreateProfile() {
     <>
       {Object.keys(formValues).length !== 0 && (
         <Container sx={{ padding: 5 }}>
-          <h1>Create Profile - Patient Information</h1>
+          <h1>Edit Profile - Patient Information</h1>
           <Grid container direction="column">
             <Grid container direction="row">
               <Grid item style={{ padding: "10px" }}>
@@ -245,8 +252,13 @@ export default function CreateProfile() {
               />
             </Grid>
           </Grid>
-          <Button variant="contained" color="success" onClick={handleSubmit}>
-            Create patient profile
+          <Button
+            variant="contained"
+            color="success"
+            onClick={handleSubmit}
+            disabled={disableEditButton}
+          >
+            Save changes
           </Button>
         </Container>
       )}
@@ -261,7 +273,7 @@ export default function CreateProfile() {
           severity="success"
           sx={{ width: "100%" }}
         >
-          Profile successfully created!
+          Profile successfully edited!
         </Alert>
       </Snackbar>
       <Snackbar

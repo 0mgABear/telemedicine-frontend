@@ -8,6 +8,7 @@ import HomePage from "./pages/HomePage";
 import ChatPage from "./pages/ChatPage";
 import CreateProfile from "./pages/CreateProfile";
 import WrapperPage from "./pages/WrapperPage";
+import EditProfile from "./pages/EditProfile";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/" element={<WelcomePage />} />
           <Route path="/loading" element={<LoadingPage />} />
           <Route path="/createprofile" element={<CreateProfile />} />
+          <Route path="/editprofile" element={<EditProfile />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/chat" element={<ChatPage />} />
         </Route>
