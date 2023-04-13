@@ -1,15 +1,14 @@
-
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
-import { Container } from "@mui/material";
+import { Button, Container } from "@mui/material";
 
 export default function HomePage() {
   const { getAccessTokenSilently, user } = useAuth0();
+  const navigate = useNavigate();
   const [patientDetails, setPatientDetails] = useState({});
   const [accessToken, setAccessToken] = useState(null);
-  // console.log(user)
 
   useEffect(() => {
     if (user && !accessToken) {
@@ -27,9 +26,11 @@ export default function HomePage() {
       });
     }
   }, [user, accessToken]);
-  // console.log(accessToken);
 
-  useEffect(() => {}, []);
+  const handleClick = (e) => {
+    e.preventDefault();
+    navigate("/editprofile");
+  };
 
   return (
     <Container sx={{ padding: 5 }}>
@@ -47,6 +48,9 @@ export default function HomePage() {
         Address: {patientDetails.address} Singapore {patientDetails.postal_code}
       </p>
       <p>Medical history: {patientDetails.medical_history}</p>
+      <Button variant="contained" color="success" onClick={handleClick}>
+        Edit patient profile
+      </Button>
     </Container>
   );
 }
