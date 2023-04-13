@@ -43,7 +43,7 @@ export function ChatGPT() {
         text = text.split(/(\n)/g);
         // ChatGPT response always come back with first 2 elements as \n, so need to slice 2 to remove them
         text = text.slice(2);
-        console.log(text)
+        console.log(text);
         setChatResponse(text);
       })
       .then(() => {
@@ -76,19 +76,31 @@ export function ChatGPT() {
           label="Ask ChatGPT anything!"
           value={searchValue}
           onChange={handleChange}
+          style={{ minWidth: "100%" }}
         />
+        <div style={{ minWidth: "100%", textAlign: "center" }}>
+          <Button
+            variant="contained"
+            onClick={generateResponse}
+            disabled={disabled}
+          >
+            Ask!
+          </Button>
+        </div>
       </Box>
-      <Button
-        variant="contained"
-        onClick={generateResponse}
-        disabled={disabled}
-      >
-        Ask!
-      </Button>
-      <Paper elevation={3} sx={{ padding: 5, marginTop: 2 }}>
-        {!waitingResponse && chatResponse !== "" && chatResponse.map((info) => (
-          info === "\n" ? <><br></br></> : info
-        ))}
+
+      <Paper elevation={3} sx={{ overflow: "auto", padding: 5, marginTop: 2 }}>
+        {!waitingResponse &&
+          chatResponse !== "" &&
+          chatResponse.map((info) =>
+            info === "\n" ? (
+              <>
+                <br></br>
+              </>
+            ) : (
+              info
+            )
+          )}
         {waitingResponse && (
           <>
             <CircularProgress /> <p>Waiting for response from ChatGPT...</p>

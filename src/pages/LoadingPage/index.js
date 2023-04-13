@@ -3,7 +3,6 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-
 export default function LoadingPage() {
   const navigate = useNavigate();
   const { getAccessTokenSilently, user } = useAuth0();
@@ -19,21 +18,19 @@ export default function LoadingPage() {
       });
     }
     axios
-      .get(`http://localhost:3000/users`, configs)
+      .get(`http://localhost:3000/allpatients`, configs)
       .then(function (response) {
         console.log(response.data);
         let userFoundInDatabase = false;
-        let retrievedUserId = "";
         for (let i = 0; i < response.data.length; i++) {
           if (response.data[i].email === user.email) {
             userFoundInDatabase = true;
-            retrievedUserId = response.data[i].id;
           }
         }
         if (!userFoundInDatabase) {
           navigate("/createprofile");
         } else {
-          navigate(`/${retrievedUserId}/dashboard`);
+          navigate(`/home`);
         }
       })
       .catch(function (error) {
@@ -42,13 +39,9 @@ export default function LoadingPage() {
   }, [user, accessToken]);
   console.log(accessToken);
 
-
-
   return (
     <div>
-      <div></div>
       <div>Checking login token and existence in database...</div>
-
     </div>
   );
 }
