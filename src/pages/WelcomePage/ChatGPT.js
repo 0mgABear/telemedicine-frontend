@@ -73,7 +73,7 @@ export function ChatGPT() {
       >
         <TextField
           id="outlined-name"
-          label="Ask ChatGPT anything!"
+          label="Ask Health At Hand anything!"
           value={searchValue}
           onChange={handleChange}
           style={{ minWidth: "100%" }}

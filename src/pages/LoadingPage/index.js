@@ -18,19 +18,42 @@ export default function LoadingPage() {
       });
     }
     axios
-      .get(`http://localhost:3000/allpatients`, configs)
+      .get(`http://localhost:3000/alldoctors`, configs)
       .then(function (response) {
         console.log(response.data);
         let userFoundInDatabase = false;
         for (let i = 0; i < response.data.length; i++) {
           if (response.data[i].email === user.email) {
             userFoundInDatabase = true;
+            localStorage.setItem('doctorid', response.data[i].id)
+            localStorage.setItem("doctorname", response.data[i].full_name);
+            localStorage.setItem("specialtyid", response.data[i].specialty_id);
+            localStorage.setItem("mcr", response.data[i].mcr);
+            localStorage.setItem("doctoremail", response.data[i].email);
           }
         }
-        if (!userFoundInDatabase) {
-          navigate("/createprofile");
+        if (userFoundInDatabase) {
+          navigate("/prescriptions");
         } else {
-          navigate(`/home`);
+          axios
+            .get(`http://localhost:3000/allpatients`, configs)
+            .then(function (response) {
+              console.log(response.data);
+              let userFoundInDatabase = false;
+              for (let i = 0; i < response.data.length; i++) {
+                if (response.data[i].email === user.email) {
+                  userFoundInDatabase = true;
+                }
+              }
+              if (!userFoundInDatabase) {
+                navigate("/createprofile");
+              } else {
+                navigate(`/home`);
+              }
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
         }
       })
       .catch(function (error) {

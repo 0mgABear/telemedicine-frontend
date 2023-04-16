@@ -9,6 +9,9 @@ import ChatPage from "./pages/ChatPage";
 import CreateProfile from "./pages/CreateProfile";
 import WrapperPage from "./pages/WrapperPage";
 import EditProfile from "./pages/EditProfile";
+import PrescriptionsSummary from "./pages/PrescriptionsSummary";
+import PrescriptionsPatient from "./pages/PrescriptionsPatient";
+import PrescriptionsPage from "./pages/PrescriptionsPage";
 
 function App() {
   return (
@@ -21,6 +24,9 @@ function App() {
           <Route path="/editprofile" element={<EditProfile />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/chat" element={<ChatPage />} />
+          <Route path="/prescriptions" element={<PrescriptionsSummary />} />
+          <Route path="/prescriptions/patient/:patient_id" element={<PrescriptionsPatient />} />
+          <Route path="/prescriptions/doctor" element={<PrescriptionsPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
