@@ -106,8 +106,8 @@ export default function PrescriptionsSummary() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {patientsNames.map((values) => (
-              <TableRow key={values}>
+            {patientsNames.map((values, key) => (
+              <TableRow key={key}>
                 <TableCell>
                   {values.last_name} {values.first_name}
                 </TableCell>

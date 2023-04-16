@@ -15,12 +15,19 @@ export default function MainAppBar() {
   const { getAccessTokenSilently, user, loginWithRedirect, logout } =
     useAuth0();
   const [accessToken, setAccessToken] = useState(null);
+  const [patientLogin, setPatientLogin] = useState(false);
+  const [doctorLogin, setDoctorLogin] = useState(false);
 
   useEffect(() => {
     if (user && !accessToken) {
       getAccessTokenSilently().then((jwt) => setAccessToken(jwt));
     }
   }, [user, accessToken]);
+
+  useEffect(() => {
+    setPatientLogin(localStorage.getItem("patientlogin"));
+    setDoctorLogin(localStorage.getItem("doctorlogin"));
+  }, [patientLogin, doctorLogin]);
 
   return (
     <Box sx={{ flexGrow: 1, width: "100vw", maxHeight: 100 }}>
@@ -35,13 +42,31 @@ export default function MainAppBar() {
           </Typography>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
             <Grid container>
-              {user && (
+              {user && patientLogin === "true" && (
                 <Grid item>
                   <ListItem key="Profile" disablePadding>
                     <ListItemButton>
                       <Link to="/home" style={{ textDecoration: "none" }}>
                         <ListItemText
                           primary="Profile"
+                          sx={{ color: "white" }}
+                        />
+                      </Link>
+                    </ListItemButton>
+                  </ListItem>
+                </Grid>
+              )}
+
+              {user && doctorLogin === "true" && (
+                <Grid item>
+                  <ListItem key="Prescriptions" disablePadding>
+                    <ListItemButton>
+                      <Link
+                        to="/prescriptions"
+                        style={{ textDecoration: "none" }}
+                      >
+                        <ListItemText
+                          primary="Prescriptions"
                           sx={{ color: "white" }}
                         />
                       </Link>
