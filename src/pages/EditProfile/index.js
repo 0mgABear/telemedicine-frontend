@@ -87,19 +87,15 @@ export default function EditProfile() {
 
   useEffect(() => {
     if (user) {
-      setFormValues({
-        email: user.email,
-        last_name: user.family_name,
-        first_name: user.given_name,
-        ic_number: "",
-        age: 0,
-        gender: "Male",
-        height: 0,
-        weight: 0,
-        address: "",
-        postal_code: "",
-        medical_history: "",
-      });
+      axios
+        .get(`http://localhost:3000/patients/${user.email}`)
+        .then(function (response) {
+          console.log(response.data);
+          setFormValues(response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     }
   }, [user]);
 
