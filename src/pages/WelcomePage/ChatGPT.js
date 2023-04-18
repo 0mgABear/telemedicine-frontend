@@ -81,6 +81,7 @@ export function ChatGPT() {
         <div style={{ minWidth: "100%", textAlign: "center" }}>
           <Button
             variant="contained"
+            color="success"
             onClick={generateResponse}
             disabled={disabled}
           >

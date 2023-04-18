@@ -90,8 +90,8 @@ export default function PrescriptionsPatient() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {prescriptionsRetrieved.map((values) => (
-              <TableRow key={values}>
+            {prescriptionsRetrieved.map((values, key) => (
+              <TableRow key={key}>
                 <TableCell>{patientName}</TableCell>
                 <TableCell>{values.diagnosis}</TableCell>
                 <TableCell> {values.drug_name}</TableCell>

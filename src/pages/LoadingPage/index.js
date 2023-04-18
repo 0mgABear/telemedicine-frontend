@@ -30,6 +30,8 @@ export default function LoadingPage() {
             localStorage.setItem("specialtyid", response.data[i].specialty_id);
             localStorage.setItem("mcr", response.data[i].mcr);
             localStorage.setItem("doctoremail", response.data[i].email);
+            localStorage.setItem("doctorlogin", true);
+            localStorage.setItem("patientlogin", false);
           }
         }
         if (userFoundInDatabase) {
@@ -43,6 +45,8 @@ export default function LoadingPage() {
               for (let i = 0; i < response.data.length; i++) {
                 if (response.data[i].email === user.email) {
                   userFoundInDatabase = true;
+                  localStorage.setItem("doctorlogin", false);
+                  localStorage.setItem("patientlogin", true);
                 }
               }
               if (!userFoundInDatabase) {
@@ -60,7 +64,6 @@ export default function LoadingPage() {
         console.log(error);
       });
   }, [user, accessToken]);
-  console.log(accessToken);
 
   return (
     <div>
