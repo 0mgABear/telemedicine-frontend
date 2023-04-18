@@ -39,16 +39,16 @@ export default function MainAppBar() {
 
           {patientLogin === "true" && (
             <Link to={"/home"}>
-              <img src={companylogo} width={100} />
+              <img src={companylogo} width={100} alt="" />
             </Link>
           )}
           {doctorLogin === "true" && (
             <Link to={"/prescriptions"}>
-              <img src={companylogo} width={100} />
+              <img src={companylogo} width={100} alt="" />
             </Link>
           )}
           {!patientLogin && !doctorLogin && (
-            <img src={companylogo} width={100} />
+            <img src={companylogo} width={100} alt="" />
           )}
 
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
@@ -56,7 +56,6 @@ export default function MainAppBar() {
           </Typography>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
             <Grid container>
-
               {user && patientLogin && (
                 <Grid item>
                   <ListItem key="Locate a clinic" disablePadding>

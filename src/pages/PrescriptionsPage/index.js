@@ -2,6 +2,7 @@ import {
   Button,
   Container,
   FormControl,
+  FormHelperText,
   Grid,
   InputAdornment,
   InputLabel,
@@ -43,6 +44,7 @@ export default function PrescriptionsPage() {
   const [openSuccess, setOpenSuccess] = useState(false);
   const [openFailure, setOpenFailure] = useState(false);
   const [disableEditButton, setDisableEditButton] = useState(false);
+  const [patientDrugAllergy, setPatientDrugAllergy] = useState("");
 
   const handleCloseSuccess = (event, reason) => {
     if (reason === "clickaway") {
@@ -97,6 +99,15 @@ export default function PrescriptionsPage() {
 
   const handleNameSelectChange = (e) => {
     setFormValues({ ...formValues, patient_id: e.target.value });
+    console.log(e.target.value)
+    for (let x=0; x < patientData.length; x++){
+      if (e.target.value === patientData[x].id){
+        let patient = patientData[x];
+        setPatientDrugAllergy(patient.drug_allergy);
+        break;
+      }
+    }
+    
     console.log(formValues);
   };
 
@@ -202,6 +213,9 @@ export default function PrescriptionsPage() {
                   </MenuItem>
                 ))}
               </Select>
+              {formValues.patient_id !== "" && (
+                <FormHelperText style={{color: "red"}}>Drug allergies: {patientDrugAllergy}</FormHelperText>
+              )}
             </FormControl>
           </Grid>
           <Grid item style={{ padding: "10px" }}>
