@@ -25,7 +25,7 @@ export default function LoadingPage() {
         for (let i = 0; i < response.data.length; i++) {
           if (response.data[i].email === user.email) {
             userFoundInDatabase = true;
-            localStorage.setItem('doctorid', response.data[i].id)
+            localStorage.setItem("doctorid", response.data[i].id);
             localStorage.setItem("doctorname", response.data[i].full_name);
             localStorage.setItem("specialtyid", response.data[i].specialty_id);
             localStorage.setItem("mcr", response.data[i].mcr);
@@ -47,11 +47,18 @@ export default function LoadingPage() {
                   userFoundInDatabase = true;
                   localStorage.setItem("doctorlogin", false);
                   localStorage.setItem("patientlogin", true);
+                  localStorage.setItem("patientid", response.data[i].id);
                 }
               }
               if (!userFoundInDatabase) {
+                // setTimeout(() => {
+                //   navigate("/createprofile");
+                // }, 2500);
                 navigate("/createprofile");
               } else {
+                // setTimeout(() => {
+                //   navigate(`/home`);
+                // }, 2500);
                 navigate(`/home`);
               }
             })

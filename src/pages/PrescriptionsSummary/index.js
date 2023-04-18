@@ -24,6 +24,7 @@ export default function PrescriptionsSummary() {
   const navigate = useNavigate();
 
   useEffect(() => {
+
     if (user && !accessToken) {
       getAccessTokenSilently().then((jwt) => setAccessToken(jwt));
     }

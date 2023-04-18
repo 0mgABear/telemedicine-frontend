@@ -10,6 +10,7 @@ export default function HomePage() {
   const [patientDetails, setPatientDetails] = useState({});
   const [accessToken, setAccessToken] = useState(null);
 
+
   useEffect(() => {
     if (user && !accessToken) {
       getAccessTokenSilently().then((jwt) => {
@@ -19,6 +20,9 @@ export default function HomePage() {
           .then(function (response) {
             console.log(response.data);
             setPatientDetails(response.data);
+            localStorage.setItem("doctorlogin", false);
+            localStorage.setItem("patientlogin", true);
+            localStorage.setItem("patientid", response.data.id);
           })
           .catch(function (error) {
             console.log(error);

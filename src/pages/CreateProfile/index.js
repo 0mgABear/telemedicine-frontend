@@ -31,6 +31,7 @@ export default function CreateProfile() {
   const [formValues, setFormValues] = useState({});
   const [openSuccess, setOpenSuccess] = useState(false);
   const [openFailure, setOpenFailure] = useState(false);
+  const [disableEditButton, setDisableEditButton] = useState(false);
 
   const handleInputChange = (e) => {
     setFormValues({ ...formValues, [e.target.id]: e.target.value });
@@ -61,7 +62,11 @@ export default function CreateProfile() {
       .then(function (response) {
         console.log(response);
         setOpenSuccess(true);
-        navigate("/home");
+        setDisableEditButton(true);
+        setTimeout(() => {
+          navigate("/home");
+        }, 3000);
+        
       })
       .catch(function (error) {
         console.log(error);
@@ -245,7 +250,12 @@ export default function CreateProfile() {
               />
             </Grid>
           </Grid>
-          <Button variant="contained" color="success" onClick={handleSubmit}>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={handleSubmit}
+            disabled={disableEditButton}
+          >
             Create patient profile
           </Button>
         </Container>

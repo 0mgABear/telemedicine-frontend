@@ -1,5 +1,6 @@
 import "./App.css";
 import * as React from "react";
+import { useState } from "react";
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import WelcomePage from "./pages/WelcomePage";
@@ -25,7 +26,10 @@ function App() {
           <Route path="/home" element={<HomePage />} />
           <Route path="/chat" element={<ChatPage />} />
           <Route path="/prescriptions" element={<PrescriptionsSummary />} />
-          <Route path="/prescriptions/patient/:patient_id" element={<PrescriptionsPatient />} />
+          <Route
+            path="/prescriptions/patient/:patient_id"
+            element={<PrescriptionsPatient />}
+          />
           <Route path="/prescriptions/doctor" element={<PrescriptionsPage />} />
         </Route>
       </Routes>

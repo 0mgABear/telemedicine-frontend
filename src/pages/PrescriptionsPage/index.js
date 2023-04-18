@@ -116,18 +116,29 @@ export default function PrescriptionsPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios
-      .post(`http://localhost:3000/createprescription`, formValues, configs)
-      .then(function (response) {
-        console.log(response);
-        setOpenSuccess(true);
-        setDisableEditButton(true);
-        setTimeout(moveToPrescriptionsSummary, 3000);
-      })
-      .catch(function (error) {
-        console.log(error);
-        setOpenFailure(true);
-      });
+    if (
+      formValues.patient_id !== "" &&
+      formValues.diagnosis !== "" &&
+      formValues.drug_name !== "" &&
+      formValues.dose !== "" &&
+      formValues.frequency !== "" &&
+      formValues.remarks !== ""
+    ) {
+      axios
+        .post(`http://localhost:3000/createprescription`, formValues, configs)
+        .then(function (response) {
+          console.log(response);
+          setOpenSuccess(true);
+          setDisableEditButton(true);
+          setTimeout(moveToPrescriptionsSummary, 3000);
+        })
+        .catch(function (error) {
+          console.log(error);
+          setOpenFailure(true);
+        });
+    } else {
+      setOpenFailure(true);
+    }
   };
 
   useEffect(() => {

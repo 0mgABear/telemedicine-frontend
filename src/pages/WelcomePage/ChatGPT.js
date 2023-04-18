@@ -39,12 +39,18 @@ export function ChatGPT() {
       .then(function (response) {
         console.log(response);
         let text = response.data.choices[0].message.content;
-        // This is a regexp to split the text by finding the delimiter \n but still keep the delimiter in array
-        text = text.split(/(\n)/g);
-        // ChatGPT response always come back with first 2 elements as \n, so need to slice 2 to remove them
-        text = text.slice(2);
-        console.log(text);
-        setChatResponse(text);
+
+        if (text.includes("\n")) {
+          // This is a regexp to split the text by finding the delimiter \n but still keep the delimiter in array
+          text = text.split(/(\n)/g);
+          // ChatGPT response always come back with first 2 elements as \n, so need to slice 2 to remove them
+          text = text.slice(2);
+          console.log(text);
+          setChatResponse(text);
+        } else {
+          console.log(text);
+          setChatResponse(text);
+        }
       })
       .then(() => {
         setWaitingResponse(false);
@@ -91,6 +97,18 @@ export function ChatGPT() {
       </Box>
 
       <Paper elevation={3} sx={{ overflow: "auto", padding: 5, marginTop: 2 }}>
+        {/* {!waitingResponse &&
+          chatResponse !== "" &&
+          chatResponse.length === 1 &&
+          chatResponse.map((info) =>
+            info === "\n" ? (
+              <>
+                <br></br>
+              </>
+            ) : (
+              info
+            )
+          )} */}
         {!waitingResponse &&
           chatResponse !== "" &&
           chatResponse.map((info) =>

@@ -11,8 +11,9 @@ export default function StickyFooter() {
         flexDirection: "column",
         minHeight: "10vh",
         position: "fixed",
+        left: 0,
         bottom: 0,
-        minWidth: "100vw"
+        width: "100%",
       }}
     >
       <Box
@@ -22,6 +23,11 @@ export default function StickyFooter() {
           px: 2,
           mt: "auto",
           backgroundColor: "rgb(128,207,165)",
+          position: "relative",
+          overflow: "hidden",
+          left: 0,
+          bottom: 0,
+          width: "100%",
         }}
       >
         <Container maxWidth="sm">
