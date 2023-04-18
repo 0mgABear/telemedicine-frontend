@@ -1,5 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { Button, Container, Grid } from "@mui/material";
+import { Alert, Button, Container, Snackbar } from "@mui/material";
 import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -10,6 +10,13 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import * as React from "react";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 export default function PrescriptionsPatient() {
   const { getAccessTokenSilently, user } = useAuth0();
@@ -17,6 +24,10 @@ export default function PrescriptionsPatient() {
   const [prescriptionsRetrieved, setPrescriptionsRetrieved] = useState([]);
   const [patientName, setPatientName] = useState("");
   const [patientDrugAllergy, setPatientDrugAllergy] = useState("");
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [singlePrescription, setSinglePrescription] = useState("");
+  const [openDeleteSuccess, setOpenDeleteSuccess] = useState(false);
+  const [openDeleteFailure, setOpenDeleteFailure] = useState(false);
   const params = useParams();
   const navigate = useNavigate();
   const doctorId = localStorage.getItem("doctorid");
@@ -30,6 +41,49 @@ export default function PrescriptionsPatient() {
 
   const configs = {};
   if (accessToken) configs.headers = { Authorization: `Bearer ${accessToken}` };
+
+  const handleCloseSuccess = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenDeleteSuccess(false);
+  };
+
+  const handleCloseFailure = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenDeleteFailure(false);
+  };
+
+  const handleDelete = (value) => {
+    setSinglePrescription(value);
+    setOpenDeleteDialog(true);
+  };
+
+  const handleDialogCloseDisagree = () => {
+    setOpenDeleteDialog(false);
+  };
+
+  const handleDialogCloseAgree = () => {
+    setOpenDeleteDialog(false);
+    axios
+      .delete(
+        `http://localhost:3000/deleteprescription/${singlePrescription}`,
+        configs
+      )
+      .then(function (response) {
+        console.log(response);
+        setOpenDeleteSuccess(true);
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      })
+      .catch(function (error) {
+        console.log(error);
+        setOpenDeleteFailure(true);
+      });
+  };
 
   useMemo(() => {
     axios
@@ -93,6 +147,9 @@ export default function PrescriptionsPatient() {
               <TableCell sx={{ fontWeight: "bold", color: "white" }}>
                 Date / Time
               </TableCell>
+              <TableCell sx={{ fontWeight: "bold", color: "white" }}>
+                Delete?
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -104,10 +161,18 @@ export default function PrescriptionsPatient() {
                 <TableCell>{values.dose}</TableCell>
                 <TableCell>{values.frequency}</TableCell>
                 <TableCell>
-                  {values.updatedAt.slice(0, 10)}
+                  {values.updated_at.slice(0, 10)}
                   {" / "}
-                  {values.updatedAt.slice(11, 16)}
+                  {values.updated_at.slice(11, 16)}
                   {" hrs"}
+                </TableCell>
+                <TableCell>
+                  <DeleteForeverIcon
+                    color="error"
+                    onClick={() => {
+                      handleDelete(values.id);
+                    }}
+                  />
                 </TableCell>
               </TableRow>
             ))}
@@ -119,6 +184,67 @@ export default function PrescriptionsPatient() {
       <Button variant="contained" color="success" onClick={() => navigate(-1)}>
         Back to previous page
       </Button>
+      <Dialog
+        open={openDeleteDialog}
+        onClose={handleDialogCloseDisagree}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Delete prescription for this patient?"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            This step is irreversible. Prescription data will be deleted from
+            database forever.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleDialogCloseAgree}
+            autoFocus
+            variant="contained"
+            color="success"
+          >
+            Agree
+          </Button>
+          <Button
+            onClick={handleDialogCloseDisagree}
+            variant="contained"
+            color="error"
+          >
+            Disagree
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        open={openDeleteSuccess}
+        autoHideDuration={2000}
+        onClose={handleCloseSuccess}
+      >
+        <Alert
+          onClose={handleCloseSuccess}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          Prescription successfully deleted!
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        open={openDeleteFailure}
+        autoHideDuration={2000}
+        onClose={handleCloseFailure}
+      >
+        <Alert
+          onClose={handleCloseFailure}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          Error! Prescription isn't deleted!
+        </Alert>
+      </Snackbar>
     </Container>
   );
 }
