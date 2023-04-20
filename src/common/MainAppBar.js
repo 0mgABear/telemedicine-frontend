@@ -3,9 +3,6 @@ import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
 import companylogo from "../assets/health_at_hand_logo.png";
 import { Grid, ListItem, ListItemButton, ListItemText } from "@mui/material";
 import { Link } from "react-router-dom";
@@ -29,12 +26,27 @@ export default function MainAppBar() {
         sx={{ maxHeight: 100, backgroundColor: "rgb(128,207,165)" }}
       >
         <Toolbar>
-          <img src={companylogo} width={100} />
+          <img src={companylogo} alt="company logo" width={100} />
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Health At Hand
           </Typography>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
             <Grid container>
+              {user && (
+                <Grid item>
+                  <ListItem key="Locate a clinic" disablePadding>
+                    <ListItemButton>
+                      <Link to="/locate" style={{ textDecoration: "none" }}>
+                        <ListItemText
+                          primary="Locate"
+                          sx={{ color: "white" }}
+                        />
+                      </Link>
+                    </ListItemButton>
+                  </ListItem>
+                </Grid>
+              )}
+
               {user && (
                 <Grid item>
                   <ListItem key="Profile" disablePadding>
