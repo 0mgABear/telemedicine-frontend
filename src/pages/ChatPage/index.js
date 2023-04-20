@@ -1,7 +1,7 @@
 import { io } from "socket.io-client";
 import React, { useState, useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import { Container, Grid, Paper } from "@mui/material";
+import { Container, Grid } from "@mui/material";
 
 export default function ChatPage() {
   const { getAccessTokenSilently, user } = useAuth0();
