@@ -12,6 +12,7 @@ export default function LoadingPage() {
   if (accessToken) configs.headers = { Authorization: `Bearer ${accessToken}` };
 
   useEffect(() => {
+    console.log(localStorage);
     if (user && !accessToken) {
       getAccessTokenSilently().then((jwt) => {
         setAccessToken(jwt);
@@ -20,12 +21,11 @@ export default function LoadingPage() {
     axios
       .get(`http://localhost:3000/alldoctors`, configs)
       .then(function (response) {
-        console.log(response.data);
         let userFoundInDatabase = false;
         for (let i = 0; i < response.data.length; i++) {
           if (response.data[i].email === user.email) {
             userFoundInDatabase = true;
-            localStorage.setItem('doctorid', response.data[i].id)
+            localStorage.setItem("doctorid", response.data[i].id);
             localStorage.setItem("doctorname", response.data[i].full_name);
             localStorage.setItem("specialtyid", response.data[i].specialty_id);
             localStorage.setItem("mcr", response.data[i].mcr);
@@ -40,7 +40,6 @@ export default function LoadingPage() {
           axios
             .get(`http://localhost:3000/allpatients`, configs)
             .then(function (response) {
-              console.log(response.data);
               let userFoundInDatabase = false;
               for (let i = 0; i < response.data.length; i++) {
                 if (response.data[i].email === user.email) {
