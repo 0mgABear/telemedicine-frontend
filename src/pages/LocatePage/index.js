@@ -5,6 +5,7 @@ import { Container } from "@mui/material";
 const containerStyle = {
   width: "600px",
   height: "600px",
+  margin: "15px auto",
 };
 
 export const LocateClinic = () => {
@@ -48,14 +49,14 @@ export const LocateClinic = () => {
   };
 
   return isLoaded ? (
-    <Container>
+    <Container style={containerStyle}>
       {error ? (
         <div>{error}</div>
       ) : (
         <GoogleMap
           mapContainerStyle={containerStyle}
           center={center}
-          zoom={18}
+          zoom={20}
           onLoad={onLoad}
           onUnmount={onUnmount}
         >
@@ -64,7 +65,7 @@ export const LocateClinic = () => {
             onClick={handleSearchClick}
             style={{
               position: "absolute",
-              top: "10px",
+              bottom: "10px",
               left: "10px",
               zIndex: 1,
             }}

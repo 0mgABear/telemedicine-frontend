@@ -22,9 +22,14 @@ export default function MainAppBar() {
   }, [user, accessToken]);
 
   useEffect(() => {
-    setPatientLogin(localStorage.getItem("patientlogin"));
-    setDoctorLogin(localStorage.getItem("doctorlogin"));
-  }, [patientLogin, doctorLogin]);
+    console.log(localStorage.getItem("patientlogin"));
+    if (localStorage.getItem("patientlogin") == "true") {
+      setPatientLogin(true);
+    }
+    if (localStorage.getItem("doctorlogin") == "true") {
+      setDoctorLogin(true);
+    }
+  }, []);
 
   return (
     <Box sx={{ flexGrow: 1, width: "100vw", maxHeight: 100 }}>
@@ -39,13 +44,13 @@ export default function MainAppBar() {
           </Typography>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
             <Grid container>
-              {user && patientLogin === "true" && (
+              {user && patientLogin && (
                 <Grid item>
                   <ListItem key="Locate a clinic" disablePadding>
                     <ListItemButton>
                       <Link to="/locate" style={{ textDecoration: "none" }}>
                         <ListItemText
-                          primary="Locate"
+                          primary="Locate A Clinic"
                           sx={{ color: "white" }}
                         />
                       </Link>
