@@ -18,7 +18,6 @@ export default function HomePage() {
         axios
           .get(`http://localhost:3000/patients/${user.email}`)
           .then(function (response) {
-            console.log(response.data);
             setPatientDetails(response.data);
             localStorage.setItem("doctorlogin", false);
             localStorage.setItem("patientlogin", true);

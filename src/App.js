@@ -13,6 +13,7 @@ import EditProfile from "./pages/EditProfile";
 import PrescriptionsSummary from "./pages/PrescriptionsSummary";
 import PrescriptionsPatient from "./pages/PrescriptionsPatient";
 import PrescriptionsPage from "./pages/PrescriptionsPage";
+import { LocateClinic } from "./pages/LocatePage";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/loading" element={<LoadingPage />} />
           <Route path="/createprofile" element={<CreateProfile />} />
           <Route path="/editprofile" element={<EditProfile />} />
+          <Route path="/locate" element={<LocateClinic />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/chat" element={<ChatPage />} />
           <Route path="/prescriptions" element={<PrescriptionsSummary />} />
