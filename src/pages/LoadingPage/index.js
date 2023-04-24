@@ -46,11 +46,18 @@ export default function LoadingPage() {
                   userFoundInDatabase = true;
                   localStorage.setItem("doctorlogin", false);
                   localStorage.setItem("patientlogin", true);
+                  localStorage.setItem("patientid", response.data[i].id);
                 }
               }
               if (!userFoundInDatabase) {
+                // setTimeout(() => {
+                //   navigate("/createprofile");
+                // }, 2500);
                 navigate("/createprofile");
               } else {
+                // setTimeout(() => {
+                //   navigate(`/home`);
+                // }, 2500);
                 navigate(`/home`);
               }
             })

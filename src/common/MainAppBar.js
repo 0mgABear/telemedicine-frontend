@@ -12,24 +12,22 @@ export default function MainAppBar() {
   const { getAccessTokenSilently, user, loginWithRedirect, logout } =
     useAuth0();
   const [accessToken, setAccessToken] = useState(null);
-  const [patientLogin, setPatientLogin] = useState(false);
-  const [doctorLogin, setDoctorLogin] = useState(false);
+  const [patientLogin, setPatientLogin] = useState(
+    localStorage.getItem("patientlogin")
+  );
+  const [doctorLogin, setDoctorLogin] = useState(
+    localStorage.getItem("doctorlogin")
+  );
 
   useEffect(() => {
     if (user && !accessToken) {
       getAccessTokenSilently().then((jwt) => setAccessToken(jwt));
+      setTimeout(() => {
+        setPatientLogin(localStorage.getItem("patientlogin"));
+        setDoctorLogin(localStorage.getItem("doctorlogin"));
+      }, 1000);
     }
   }, [user, accessToken]);
-
-  useEffect(() => {
-    console.log(localStorage.getItem("patientlogin"));
-    if (localStorage.getItem("patientlogin") == "true") {
-      setPatientLogin(true);
-    }
-    if (localStorage.getItem("doctorlogin") == "true") {
-      setDoctorLogin(true);
-    }
-  }, []);
 
   return (
     <Box sx={{ flexGrow: 1, width: "100vw", maxHeight: 100 }}>
@@ -38,12 +36,27 @@ export default function MainAppBar() {
         sx={{ maxHeight: 100, backgroundColor: "rgb(128,207,165)" }}
       >
         <Toolbar>
-          <img src={companylogo} alt="company logo" width={100} />
+
+          {patientLogin === "true" && (
+            <Link to={"/home"}>
+              <img src={companylogo} width={100} />
+            </Link>
+          )}
+          {doctorLogin === "true" && (
+            <Link to={"/prescriptions"}>
+              <img src={companylogo} width={100} />
+            </Link>
+          )}
+          {!patientLogin && !doctorLogin && (
+            <img src={companylogo} width={100} />
+          )}
+
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Health At Hand
           </Typography>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
             <Grid container>
+
               {user && patientLogin && (
                 <Grid item>
                   <ListItem key="Locate a clinic" disablePadding>
@@ -59,7 +72,8 @@ export default function MainAppBar() {
                 </Grid>
               )}
 
-              {user && (
+              {patientLogin === "true" && (
+
                 <Grid item>
                   <ListItem key="Profile" disablePadding>
                     <ListItemButton>
@@ -74,7 +88,7 @@ export default function MainAppBar() {
                 </Grid>
               )}
 
-              {user && doctorLogin === "true" && (
+              {doctorLogin === "true" && (
                 <Grid item>
                   <ListItem key="Prescriptions" disablePadding>
                     <ListItemButton>

@@ -10,6 +10,7 @@ export default function HomePage() {
   const [patientDetails, setPatientDetails] = useState({});
   const [accessToken, setAccessToken] = useState(null);
 
+
   useEffect(() => {
     if (user && !accessToken) {
       getAccessTokenSilently().then((jwt) => {
@@ -18,6 +19,9 @@ export default function HomePage() {
           .get(`http://localhost:3000/patients/${user.email}`)
           .then(function (response) {
             setPatientDetails(response.data);
+            localStorage.setItem("doctorlogin", false);
+            localStorage.setItem("patientlogin", true);
+            localStorage.setItem("patientid", response.data.id);
           })
           .catch(function (error) {
             console.log(error);

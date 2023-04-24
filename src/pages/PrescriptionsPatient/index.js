@@ -16,6 +16,7 @@ export default function PrescriptionsPatient() {
   const [accessToken, setAccessToken] = useState(null);
   const [prescriptionsRetrieved, setPrescriptionsRetrieved] = useState([]);
   const [patientName, setPatientName] = useState("");
+  const [patientDrugAllergy, setPatientDrugAllergy] = useState("");
   const params = useParams();
   const navigate = useNavigate();
   const doctorId = localStorage.getItem("doctorid");
@@ -55,6 +56,7 @@ export default function PrescriptionsPatient() {
         patient += " ";
         patient += response.data.first_name;
         setPatientName(patient);
+        setPatientDrugAllergy(response.data.drug_allergy);
       })
       .catch(function (error) {
         console.log(error);
@@ -65,6 +67,10 @@ export default function PrescriptionsPatient() {
     <Container sx={{ padding: 5 }}>
       <h1>Dr {doctorname},</h1>
       <h3>Your past prescriptions for patient {patientName}</h3>
+      <h3>
+        Drug allergies:{" "}
+        <span style={{ color: "red" }}>{patientDrugAllergy}</span>
+      </h3>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }}>
           <TableHead>
@@ -85,7 +91,7 @@ export default function PrescriptionsPatient() {
                 Frequency
               </TableCell>
               <TableCell sx={{ fontWeight: "bold", color: "white" }}>
-                Date
+                Date / Time
               </TableCell>
             </TableRow>
           </TableHead>
@@ -97,7 +103,12 @@ export default function PrescriptionsPatient() {
                 <TableCell> {values.drug_name}</TableCell>
                 <TableCell>{values.dose}</TableCell>
                 <TableCell>{values.frequency}</TableCell>
-                <TableCell>{values.updatedAt.slice(0, 10)}</TableCell>
+                <TableCell>
+                  {values.updatedAt.slice(0, 10)}
+                  {" / "}
+                  {values.updatedAt.slice(11, 16)}
+                  {" hrs"}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
