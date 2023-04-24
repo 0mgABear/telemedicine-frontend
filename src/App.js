@@ -13,7 +13,7 @@ import EditProfile from "./pages/EditProfile";
 import PrescriptionsSummary from "./pages/PrescriptionsSummary";
 import PrescriptionsPatient from "./pages/PrescriptionsPatient";
 import PrescriptionsPage from "./pages/PrescriptionsPage";
-import { LocateClinic } from "./pages/LocatePage";
+import LocateClinic from "./pages/LocatePage"
 
 function App() {
   return (
@@ -33,6 +33,7 @@ function App() {
             element={<PrescriptionsPatient />}
           />
           <Route path="/prescriptions/doctor" element={<PrescriptionsPage />} />
+          <Route path="/locate" element={<LocateClinic />} />
         </Route>
       </Routes>
     </BrowserRouter>

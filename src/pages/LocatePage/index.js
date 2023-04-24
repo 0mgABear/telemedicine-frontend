@@ -8,7 +8,7 @@ const containerStyle = {
   margin: "15px auto",
 };
 
-export const LocateClinic = () => {
+export default function LocateClinic (){
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_API,
@@ -56,7 +56,7 @@ export const LocateClinic = () => {
         <GoogleMap
           mapContainerStyle={containerStyle}
           center={center}
-          zoom={20}
+          zoom={17}
           onLoad={onLoad}
           onUnmount={onUnmount}
         >

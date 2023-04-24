@@ -58,22 +58,34 @@ export default function EditProfile() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios
-      .put(
-        `http://localhost:3000/editpatient/${user.email}`,
-        formValues,
-        configs
-      )
-      .then(function (response) {
-        console.log(response);
-        setOpenSuccess(true);
-        setDisableEditButton(true);
-        setTimeout(moveToHomePage, 3000);
-      })
-      .catch(function (error) {
-        console.log(error);
-        setOpenFailure(true);
-      });
+    if (
+      formValues.last_name !== "" &&
+      formValues.first_name !== "" &&
+      formValues.ic_number !== "" &&
+      formValues.address !== "" &&
+      formValues.postal_code !== "" &&
+      formValues.medical_history !== "" &&
+      formValues.drug_allergy !== ""
+    ) {
+      axios
+        .put(
+          `http://localhost:3000/editpatient/${user.email}`,
+          formValues,
+          configs
+        )
+        .then(function (response) {
+          console.log(response);
+          setOpenSuccess(true);
+          setDisableEditButton(true);
+          setTimeout(moveToHomePage, 3000);
+        })
+        .catch(function (error) {
+          console.log(error);
+          setOpenFailure(true);
+        });
+    } else {
+      setOpenFailure(true);
+    }
   };
 
   useEffect(() => {
@@ -235,17 +247,31 @@ export default function EditProfile() {
               </Grid>
             </Grid>
 
-            <Grid item style={{ padding: "10px" }}>
-              <TextField
-                multiline
-                minRows={2}
-                maxRows={4}
-                required
-                id="medical_history"
-                label="Medical History"
-                value={formValues.medical_history}
-                onChange={handleInputChange}
-              />
+            <Grid container direction="row">
+              <Grid item style={{ padding: "10px" }}>
+                <TextField
+                  multiline
+                  minRows={2}
+                  maxRows={4}
+                  required
+                  id="medical_history"
+                  label="Medical History"
+                  value={formValues.medical_history}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item style={{ padding: "10px" }}>
+                <TextField
+                  multiline
+                  minRows={2}
+                  maxRows={4}
+                  required
+                  id="drug_allergy"
+                  label="Drug allergies?"
+                  value={formValues.drug_allergy}
+                  onChange={handleInputChange}
+                />
+              </Grid>
             </Grid>
           </Grid>
           <Button
