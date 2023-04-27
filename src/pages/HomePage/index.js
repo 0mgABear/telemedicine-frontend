@@ -10,7 +10,6 @@ export default function HomePage() {
   const [patientDetails, setPatientDetails] = useState({});
   const [accessToken, setAccessToken] = useState(null);
 
-
   useEffect(() => {
     if (user && !accessToken) {
       getAccessTokenSilently().then((jwt) => {
@@ -36,7 +35,12 @@ export default function HomePage() {
   };
 
   return (
-    <Container sx={{ padding: 5 }}>
+    <Container
+      sx={{
+        padding: 5,
+        margin: "auto",
+      }}
+    >
       <h1>
         Welcome, {patientDetails.last_name} {patientDetails.first_name}
       </h1>

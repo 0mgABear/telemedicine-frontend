@@ -1,9 +1,13 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
-import { Container } from "@mui/material";
+import {
+  GoogleMap,
+  useJsApiLoader,
+  Marker,
+  InfoWindow,
+} from "@react-google-maps/api";
+import { Container, Typography } from "@mui/material";
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
-import { hover } from "@testing-library/user-event/dist/hover";
 
 const containerStyle = {
   width: "550px",
@@ -28,7 +32,22 @@ export default function LocateClinic() {
   const [zoom, setZoom] = useState(15);
   const { user } = useAuth0();
   const [query, setQuery] = useState("");
-  const [hoveredMarker, setHoveredMarker] = useState(null);
+  const [selectedClinic, setSelectedClinic] = useState(null);
+
+  const handleMarkerClick = (clinic) => {
+    setSelectedClinic(clinic);
+  };
+
+  const handleClose = () => {
+    setSelectedClinic(null);
+  };
+
+  const getGoogleMapsUrl = (placeId) => {
+    const baseUrl = "https://www.google.com/maps/place/";
+    const url = new URL(baseUrl);
+    url.searchParams.append("q", `place_id:${placeId}`);
+    return url.toString();
+  };
 
   useEffect(() => {
     const fetchUserLocation = async () => {
@@ -88,15 +107,47 @@ export default function LocateClinic() {
     setQuery("near your current location");
     const request = {
       location: center,
-      radius: "5000",
       query: "clinics near me",
+      fields: ["formatted_phone_number"],
     };
     const service = new window.google.maps.places.PlacesService(map);
     service.textSearch(request, (results, status) => {
       if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-        setClinics(results);
+        const clinicsWithNumber = results.map((clinic) => {
+          return { ...clinic, phone_number: null };
+        });
+        setClinics(clinicsWithNumber);
       }
     });
+
+    for (const clinic of clinics) {
+      const service = new window.google.maps.places.PlacesService(map);
+      service.getDetails(
+        {
+          placeId: clinic.place_id,
+          fields: ["formatted_phone_number"],
+        },
+        (place) => {
+          const updatedClinic = {
+            ...clinic,
+            phone_number: place.formatted_phone_number,
+          };
+          setClinics((prevClinics) => {
+            const updatedClinics = prevClinics.map((prevClinic) => {
+              if (prevClinic.place_id === updatedClinic.place_id) {
+                return {
+                  ...prevClinic,
+                  phone_number: updatedClinic.phone_number,
+                };
+              }
+              return prevClinic;
+            });
+
+            return updatedClinics;
+          });
+        }
+      );
+    }
   };
 
   const homeSearch = () => {
@@ -114,7 +165,6 @@ export default function LocateClinic() {
 
         const request = {
           location: center,
-          radius: "5000",
           query: "clinics near me",
         };
         const service = new window.google.maps.places.PlacesService(map);
@@ -149,10 +199,36 @@ export default function LocateClinic() {
               <Marker
                 key={clinic.place_id}
                 position={clinic.geometry.location}
-                name={clinic.name}
-                address={clinic.formatted_address}
+                onMouseOver={() => {
+                  handleMarkerClick(clinic);
+                }}
               />
             ))}
+            {selectedClinic && (
+              <InfoWindow
+                position={selectedClinic.geometry.location}
+                onCloseClick={handleClose}
+              >
+                <div>
+                  <Typography variant="h6">{selectedClinic.name}</Typography>
+                  <Typography variant="body1">
+                    {selectedClinic.formatted_address}
+                  </Typography>
+                  <Typography variant="body1">
+                    {selectedClinic.formatted_phone_number}
+                  </Typography>
+                  <Typography variant="body1">
+                    <a
+                      href={getGoogleMapsUrl(selectedClinic.place_id)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      View on Google Maps
+                    </a>
+                  </Typography>
+                </div>
+              </InfoWindow>
+            )}
 
             <button
               onClick={nearbySearch}
