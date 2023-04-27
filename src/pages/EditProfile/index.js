@@ -102,7 +102,6 @@ export default function EditProfile() {
       axios
         .get(`http://localhost:3000/patients/${user.email}`)
         .then(function (response) {
-          console.log(response.data);
           setFormValues(response.data);
         })
         .catch(function (error) {

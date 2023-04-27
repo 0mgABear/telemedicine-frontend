@@ -12,7 +12,6 @@ export default function LoadingPage() {
   if (accessToken) configs.headers = { Authorization: `Bearer ${accessToken}` };
 
   useEffect(() => {
-    console.log(localStorage);
     if (user && !accessToken) {
       getAccessTokenSilently().then((jwt) => {
         setAccessToken(jwt);
