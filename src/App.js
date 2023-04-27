@@ -14,6 +14,7 @@ import PrescriptionsSummary from "./pages/PrescriptionsSummary";
 import PrescriptionsPatient from "./pages/PrescriptionsPatient";
 import PrescriptionsPage from "./pages/PrescriptionsPage";
 import LocateClinic from "./pages/LocatePage"
+import PatientPrescriptions from "./pages/PatientPrescriptions";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/home" element={<HomePage />} />
           <Route path="/chat" element={<ChatPage />} />
           <Route path="/prescriptions" element={<PrescriptionsSummary />} />
+          <Route path="/patientprescriptions" element={<PatientPrescriptions />} />
           <Route
             path="/prescriptions/patient/:patient_id"
             element={<PrescriptionsPatient />}

@@ -10,9 +10,9 @@ export default function StickyFooter() {
         display: "flex",
         flexDirection: "column",
         minHeight: "10vh",
-        position: "fixed",
-        left: 0,
-        bottom: 0,
+        // position: "fixed",
+        // left: 0,
+        // bottom: 0,
         width: "100%",
       }}
     >
@@ -20,18 +20,18 @@ export default function StickyFooter() {
         component="footer"
         sx={{
           py: 3,
-          px: 2,
           mt: "auto",
           backgroundColor: "rgb(128,207,165)",
-          position: "relative",
+          // position: "relative",
           overflow: "hidden",
-          left: 0,
-          bottom: 0,
+          // left: 0,
+          // bottom: 0,
           width: "100%",
+          // height: "100%"
         }}
       >
         <Container maxWidth="sm">
-          <Typography variant="body2" color="white">
+          <Typography variant="body2" color="white" style={{textAlign: "center"}}>
             {"Copyright © Health At Hand "}
             {new Date().getFullYear()}
           </Typography>

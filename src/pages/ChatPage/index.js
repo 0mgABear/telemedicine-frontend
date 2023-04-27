@@ -41,24 +41,24 @@ export default function ChatPage() {
       .catch(function (error) {
         console.log(error);
       });
-      axios
-        .get(`http://localhost:3000/allpatients`, configs)
-        .then(function (response) {
-          console.log(response);
-          setPatientsData(response.data);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+    axios
+      .get(`http://localhost:3000/allpatients`, configs)
+      .then(function (response) {
+        console.log(response);
+        setPatientsData(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }, []);
 
-  // when patient click on a particular doctor's room button, join that doctor's room
-  const joinChatRoom = (valueOfDoctorId) => {
-    socket.emit(
-      "subscribe",
-      valueOfDoctorId,
-      localStorage.getItem("patientid")
-    ); // doctor_id and patient_id
+  // when patient/doctor click on a particular patient/doctor's room button, join that patient/doctor's room
+  const joinChatRoom = (valueId) => {
+    if (patientLogin === "true" && doctorLogin === "false") {
+      socket.emit("subscribe", valueId, localStorage.getItem("patientid"));
+    } else if (patientLogin === "false" && doctorLogin === "true") {
+      socket.emit("subscribe", localStorage.getItem("doctorid"), valueId);
+    }
   };
   const handleSendMessage = (e) => {
     e.preventDefault();
@@ -99,8 +99,7 @@ export default function ChatPage() {
 
   return (
     <Container sx={{ padding: 3 }}>
-      <h1>Welcome to the chatroom, {user && user.given_name}
-      </h1>
+      <h1>Welcome to the chatroom, {user && user.given_name}</h1>
       <Grid container direction="row" spacing={0} sx={{ margin: "auto" }}>
         <Grid
           direction="column"

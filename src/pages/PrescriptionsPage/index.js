@@ -45,6 +45,7 @@ export default function PrescriptionsPage() {
   const [openFailure, setOpenFailure] = useState(false);
   const [disableEditButton, setDisableEditButton] = useState(false);
   const [patientDrugAllergy, setPatientDrugAllergy] = useState("");
+  const [drugInformation, setDrugInformation] = useState({});
 
   const handleCloseSuccess = (event, reason) => {
     if (reason === "clickaway") {
@@ -99,20 +100,27 @@ export default function PrescriptionsPage() {
 
   const handleNameSelectChange = (e) => {
     setFormValues({ ...formValues, patient_id: e.target.value });
-    console.log(e.target.value)
-    for (let x=0; x < patientData.length; x++){
-      if (e.target.value === patientData[x].id){
+    console.log(e.target.value);
+    for (let x = 0; x < patientData.length; x++) {
+      if (e.target.value === patientData[x].id) {
         let patient = patientData[x];
         setPatientDrugAllergy(patient.drug_allergy);
         break;
       }
     }
-    
+
     console.log(formValues);
   };
 
   const handleDrugSelectChange = (e) => {
     setFormValues({ ...formValues, drug_name: e.target.value });
+    for (let x = 0; x < drugData.length; x++) {
+      if (e.target.value === drugData[x].name) {
+        setDrugInformation(drugData[x]);
+        break;
+      }
+    }
+
     console.log(formValues);
   };
 
@@ -192,147 +200,166 @@ export default function PrescriptionsPage() {
 
   return (
     <Container>
-      <h1>Add new prescription</h1>
-
-      <Grid container direction="column">
-        <Grid container direction="row">
-          <Grid item style={{ padding: "10px" }}>
-            <FormControl>
-              <InputLabel id="patient_id">Patient name</InputLabel>
-              <Select
-                id="patient_id"
-                value={formValues.patient_id}
-                label="Patient Name"
-                onChange={handleNameSelectChange}
-                style={{ minWidth: "250px" }}
+      <Grid container direction="row">
+        <Grid container direction="column" xs={8}>
+          <h1>Add new prescription</h1>
+          <Grid container direction="row">
+            <Grid item style={{ padding: "10px" }}>
+              <FormControl>
+                <InputLabel id="patient_id">Patient name</InputLabel>
+                <Select
+                  id="patient_id"
+                  value={formValues.patient_id}
+                  label="Patient Name"
+                  onChange={handleNameSelectChange}
+                  style={{ minWidth: "250px" }}
+                  required
+                >
+                  {patientData.map((values, key) => (
+                    <MenuItem value={+values.id} key={key}>
+                      {values.last_name} {values.first_name}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {formValues.patient_id !== "" && (
+                  <FormHelperText style={{ color: "red" }}>
+                    Drug allergies: {patientDrugAllergy}
+                  </FormHelperText>
+                )}
+              </FormControl>
+            </Grid>
+            <Grid item style={{ padding: "10px" }}>
+              <TextField
                 required
-              >
-                {patientData.map((values, key) => (
-                  <MenuItem value={+values.id} key={key}>
-                    {values.last_name} {values.first_name}
-                  </MenuItem>
-                ))}
-              </Select>
-              {formValues.patient_id !== "" && (
-                <FormHelperText style={{color: "red"}}>Drug allergies: {patientDrugAllergy}</FormHelperText>
-              )}
-            </FormControl>
+                id="diagnosis"
+                label="Diagnosis"
+                value={formValues.diagnosis}
+                onChange={handleInputChange}
+              />
+            </Grid>
           </Grid>
+
+          <Grid container direction="row">
+            <Grid item style={{ padding: "10px" }}>
+              <FormControl>
+                <InputLabel id="drug_name">Drug name</InputLabel>
+                <Select
+                  id="drug_name"
+                  value={formValues.drug_name}
+                  label="Drug Name"
+                  onChange={handleDrugSelectChange}
+                  style={{ minWidth: "250px" }}
+                  required
+                >
+                  {drugData.map((values, key) => (
+                    <MenuItem key={key} value={values.name}>
+                      {values.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item style={{ padding: "10px" }}>
+              {maxDosePerFrequency && maxDosePerDay && (
+                <TextField
+                  required
+                  id="dose"
+                  label="Dose"
+                  type="number"
+                  value={formValues.dose}
+                  onChange={handleInputChange}
+                  error
+                  helperText="Exceeded max dose per interval and per day!"
+                />
+              )}
+              {maxDosePerFrequency && !maxDosePerDay && (
+                <TextField
+                  required
+                  id="dose"
+                  label="Dose"
+                  type="number"
+                  value={formValues.dose}
+                  onChange={handleInputChange}
+                  error
+                  helperText="Exceeded max dose per interval!"
+                />
+              )}
+              {!maxDosePerFrequency && maxDosePerDay && (
+                <TextField
+                  required
+                  id="dose"
+                  label="Dose"
+                  type="number"
+                  value={formValues.dose}
+                  onChange={handleInputChange}
+                  error
+                  helperText="Exceeded max dose per day!"
+                />
+              )}
+              {!maxDosePerFrequency && !maxDosePerDay && (
+                <TextField
+                  required
+                  id="dose"
+                  label="Dose"
+                  type="number"
+                  value={formValues.dose}
+                  onChange={handleInputChange}
+                />
+              )}
+            </Grid>
+            <Grid item style={{ padding: "10px" }}>
+              <FormControl>
+                <InputLabel id="frequency">Frequency</InputLabel>
+                <Select
+                  labelId="frequency"
+                  id="frequency"
+                  value={formValues.frequency}
+                  label="Frequency"
+                  onChange={handleFrequencySelectChange}
+                  style={{ minWidth: "250px" }}
+                  required
+                >
+                  <MenuItem value={0}>PRN</MenuItem>
+                  <MenuItem value={1}>ON</MenuItem>
+                  <MenuItem value={2}>BD</MenuItem>
+                  <MenuItem value={3}>TDS</MenuItem>
+                  <MenuItem value={4}>QDS</MenuItem>
+                  <MenuItem value={6}>4 hourly</MenuItem>
+                  <MenuItem value={12}>2 hourly</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+          </Grid>
+
           <Grid item style={{ padding: "10px" }}>
             <TextField
+              multiline
+              minRows={2}
+              maxRows={4}
               required
-              id="diagnosis"
-              label="Diagnosis"
-              value={formValues.diagnosis}
+              id="remarks"
+              label="Any remarks?"
+              value={formValues.remarks}
               onChange={handleInputChange}
+              style={{ minWidth: "490px" }}
             />
           </Grid>
         </Grid>
-
-        <Grid container direction="row">
-          <Grid item style={{ padding: "10px" }}>
-            <FormControl>
-              <InputLabel id="drug_name">Drug name</InputLabel>
-              <Select
-                id="drug_name"
-                value={formValues.drug_name}
-                label="Drug Name"
-                onChange={handleDrugSelectChange}
-                style={{ minWidth: "250px" }}
-                required
-              >
-                {drugData.map((values, key) => (
-                  <MenuItem key={key} value={values.name}>
-                    {values.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item style={{ padding: "10px" }}>
-            {maxDosePerFrequency && maxDosePerDay && (
-              <TextField
-                required
-                id="dose"
-                label="Dose"
-                type="number"
-                value={formValues.dose}
-                onChange={handleInputChange}
-                error
-                helperText="Exceeded max dose per interval and per day!"
-              />
-            )}
-            {maxDosePerFrequency && !maxDosePerDay && (
-              <TextField
-                required
-                id="dose"
-                label="Dose"
-                type="number"
-                value={formValues.dose}
-                onChange={handleInputChange}
-                error
-                helperText="Exceeded max dose per interval!"
-              />
-            )}
-            {!maxDosePerFrequency && maxDosePerDay && (
-              <TextField
-                required
-                id="dose"
-                label="Dose"
-                type="number"
-                value={formValues.dose}
-                onChange={handleInputChange}
-                error
-                helperText="Exceeded max dose per day!"
-              />
-            )}
-            {!maxDosePerFrequency && !maxDosePerDay && (
-              <TextField
-                required
-                id="dose"
-                label="Dose"
-                type="number"
-                value={formValues.dose}
-                onChange={handleInputChange}
-              />
-            )}
-          </Grid>
-          <Grid item style={{ padding: "10px" }}>
-            <FormControl>
-              <InputLabel id="frequency">Frequency</InputLabel>
-              <Select
-                labelId="frequency"
-                id="frequency"
-                value={formValues.frequency}
-                label="Frequency"
-                onChange={handleFrequencySelectChange}
-                style={{ minWidth: "250px" }}
-                required
-              >
-                <MenuItem value={0}>PRN</MenuItem>
-                <MenuItem value={1}>ON</MenuItem>
-                <MenuItem value={2}>BD</MenuItem>
-                <MenuItem value={3}>TDS</MenuItem>
-                <MenuItem value={4}>QDS</MenuItem>
-                <MenuItem value={6}>4 hourly</MenuItem>
-                <MenuItem value={12}>2 hourly</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-        </Grid>
-
-        <Grid item style={{ padding: "10px" }}>
-          <TextField
-            multiline
-            minRows={2}
-            maxRows={4}
-            required
-            id="remarks"
-            label="Any remarks?"
-            value={formValues.remarks}
-            onChange={handleInputChange}
-            style={{ minWidth: "490px" }}
-          />
+        <Grid container direction="column" xs={4}>
+          {Object.keys(drugInformation).length !== 0 && (
+            <>
+              <h1>Drug information</h1>
+              <div>Drug name: {drugInformation.name}</div>
+              <div>
+                Max dose per interval: {drugInformation.max_dose_per_frequency}{" "}
+                {drugInformation.unit}
+              </div>
+              <div>
+                Max dose per day: {drugInformation.max_dose_per_day}{" "}
+                {drugInformation.unit}
+              </div>
+            </>
+          )}
         </Grid>
       </Grid>
 

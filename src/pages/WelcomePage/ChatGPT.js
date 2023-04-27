@@ -13,7 +13,7 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-export function ChatGPT() {
+export function ChatGPT({ language }) {
   const [chatResponse, setChatResponse] = useState("");
   const [waitingResponse, setWaitingResponse] = useState(false);
   const [searchValue, setSearchValue] = useState("");
@@ -77,57 +77,87 @@ export function ChatGPT() {
         noValidate
         autoComplete="off"
       >
-        <TextField
-          id="outlined-name"
-          label="Ask Health At Hand anything!"
-          value={searchValue}
-          onChange={handleChange}
-          style={{ minWidth: "100%" }}
-        />
-        <div style={{ minWidth: "100%", textAlign: "center" }}>
-          <Button
-            variant="contained"
-            color="success"
-            onClick={generateResponse}
-            disabled={disabled}
-          >
-            Ask!
-          </Button>
-        </div>
+        {language === "English" && (
+          <>
+            <TextField
+              id="outlined-name"
+              label="Ask Health At Hand anything!"
+              value={searchValue}
+              onChange={handleChange}
+              style={{ minWidth: "100%" }}
+            />
+            <div style={{ minWidth: "100%", textAlign: "center" }}>
+              <Button
+                variant="contained"
+                color="success"
+                onClick={generateResponse}
+                disabled={disabled}
+              >
+                Ask!
+              </Button>
+            </div>
+          </>
+        )}
+
+        {language === "Chinese" && (
+          <>
+            <TextField
+              id="outlined-name"
+              label="询问 Health At Hand 任何问题!"
+              value={searchValue}
+              onChange={handleChange}
+              style={{ minWidth: "100%" }}
+            />
+            <div style={{ minWidth: "100%", textAlign: "center" }}>
+              <Button
+                variant="contained"
+                color="success"
+                onClick={generateResponse}
+                disabled={disabled}
+              >
+                询问!
+              </Button>
+            </div>
+          </>
+        )}
       </Box>
 
       <Paper elevation={3} sx={{ overflow: "auto", padding: 5, marginTop: 2 }}>
-        {/* {!waitingResponse &&
-          chatResponse !== "" &&
-          chatResponse.length === 1 &&
-          chatResponse.map((info) =>
-            info === "\n" ? (
-              <>
-                <br></br>
-              </>
-            ) : (
-              info
-            )
-          )} */}
         {!waitingResponse &&
           chatResponse !== "" &&
-          chatResponse.map((info) =>
+          Array.isArray(chatResponse) &&
+          chatResponse.map((info, key) =>
             info === "\n" ? (
-              <>
+              <div key={key}>
                 <br></br>
-              </>
+              </div>
             ) : (
               info
             )
           )}
-        {waitingResponse && (
+        {!waitingResponse &&
+          chatResponse !== "" &&
+          !Array.isArray(chatResponse) &&
+          chatResponse}
+        {waitingResponse && language === "English" && (
           <>
-            <CircularProgress /> <p>Waiting for response from ChatGPT...</p>
+            <CircularProgress />{" "}
+            <p>Waiting for response from Health At Hand ChatGPT...</p>
+          </>
+        )}
+        {waitingResponse && language === "Chinese" && (
+          <>
+            <CircularProgress /> <p>等待 Health At Hand ChatGPT 的回复...</p>
           </>
         )}
         {!waitingResponse &&
           chatResponse === "" &&
+          language === "English" &&
           "Your answer will appear here!"}
+        {!waitingResponse &&
+          chatResponse === "" &&
+          language === "Chinese" &&
+          "你询问的答案会出现在这里!"}
       </Paper>
     </>
   );
