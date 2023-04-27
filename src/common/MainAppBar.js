@@ -36,7 +36,6 @@ export default function MainAppBar() {
         sx={{ maxHeight: 100, backgroundColor: "rgb(128,207,165)" }}
       >
         <Toolbar>
-
           {patientLogin === "true" && (
             <Link to={"/home"}>
               <img src={companylogo} width={100} alt="" />
@@ -72,7 +71,6 @@ export default function MainAppBar() {
               )}
 
               {patientLogin === "true" && (
-
                 <Grid item>
                   <ListItem key="Profile" disablePadding>
                     <ListItemButton>
@@ -93,6 +91,24 @@ export default function MainAppBar() {
                     <ListItemButton>
                       <Link
                         to="/prescriptions"
+                        style={{ textDecoration: "none" }}
+                      >
+                        <ListItemText
+                          primary="Prescriptions"
+                          sx={{ color: "white" }}
+                        />
+                      </Link>
+                    </ListItemButton>
+                  </ListItem>
+                </Grid>
+              )}
+
+              {patientLogin === "true" && (
+                <Grid item>
+                  <ListItem key="Prescriptions" disablePadding>
+                    <ListItemButton>
+                      <Link
+                        to="/patientprescriptions"
                         style={{ textDecoration: "none" }}
                       >
                         <ListItemText
