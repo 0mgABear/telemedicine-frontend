@@ -49,6 +49,59 @@ export default function LocateClinic() {
     return url.toString();
   };
 
+  const nearbySearch = () => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      setCenter(
+        {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        },
+        (error) => {
+          setError(error.message);
+        }
+      );
+    });
+    setZoom(16);
+    setQuery("near your current location");
+    const request = {
+      location: center,
+      query: "clinics near me",
+    };
+
+    const service = new window.google.maps.places.PlacesService(map);
+    service.textSearch(request, (results, status) => {
+      if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+        const clinicsWithNumber = results.map((clinic) => {
+          return { ...clinic, phone_number: null };
+        });
+        setClinics(clinicsWithNumber);
+      }
+    });
+    clinics.map((clinic) => {
+      //iterate through every clinic in clinic state
+      const service = new window.google.maps.places.PlacesService(map);
+      const phoneNumbRequest = {
+        placeId: clinic.place_id, //pass each clinic place id
+        fields: ["formatted_phone_number"],
+      };
+      service.getDetails(phoneNumbRequest, (place, status) => {
+        if ((status = window.google.maps.places.PlacesServiceStatus.OK)) {
+          const clinicToUpdate = clinics.find(
+            (c) => c.place_id === phoneNumbRequest.placeId
+          );
+          if (clinicToUpdate) {
+            //if presernce of match
+            clinicToUpdate.phone_number = place.formatted_phone_number; //updating the field
+          }
+        }
+      });
+    });
+  };
+
+  useEffect(() => {
+    setClinics(clinics);
+  }, [clinics]);
+
   useEffect(() => {
     const fetchUserLocation = async () => {
       const response = await axios
@@ -76,7 +129,7 @@ export default function LocateClinic() {
       fetchUserLocation();
     }
     getCurrentPosition();
-  }, [map]);
+  }, [map, user]);
 
   const onLoad = useCallback(
     function callback(map) {
@@ -84,71 +137,12 @@ export default function LocateClinic() {
       map.fitBounds(bounds);
       setMap(map);
     },
-    [clinics]
+    [center]
   );
 
   const onUnmount = useCallback(function (map) {
     setMap(null);
   }, []);
-
-  const nearbySearch = () => {
-    navigator.geolocation.getCurrentPosition((position) => {
-      setCenter(
-        {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        },
-        (error) => {
-          setError(error.message);
-        }
-      );
-    });
-    setZoom(16);
-    setQuery("near your current location");
-    const request = {
-      location: center,
-      query: "clinics near me",
-      fields: ["formatted_phone_number"],
-    };
-    const service = new window.google.maps.places.PlacesService(map);
-    service.textSearch(request, (results, status) => {
-      if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-        const clinicsWithNumber = results.map((clinic) => {
-          return { ...clinic, phone_number: null };
-        });
-        setClinics(clinicsWithNumber);
-      }
-    });
-
-    for (const clinic of clinics) {
-      const service = new window.google.maps.places.PlacesService(map);
-      service.getDetails(
-        {
-          placeId: clinic.place_id,
-          fields: ["formatted_phone_number"],
-        },
-        (place) => {
-          const updatedClinic = {
-            ...clinic,
-            phone_number: place.formatted_phone_number,
-          };
-          setClinics((prevClinics) => {
-            const updatedClinics = prevClinics.map((prevClinic) => {
-              if (prevClinic.place_id === updatedClinic.place_id) {
-                return {
-                  ...prevClinic,
-                  phone_number: updatedClinic.phone_number,
-                };
-              }
-              return prevClinic;
-            });
-
-            return updatedClinics;
-          });
-        }
-      );
-    }
-  };
 
   const homeSearch = () => {
     setQuery("near home");
@@ -211,12 +205,13 @@ export default function LocateClinic() {
               >
                 <div>
                   <Typography variant="h6">{selectedClinic.name}</Typography>
+                  {/* <Typography variant="body1">
+                    {selectedClinic.phone_number}
+                  </Typography> */}
                   <Typography variant="body1">
                     {selectedClinic.formatted_address}
                   </Typography>
-                  <Typography variant="body1">
-                    {selectedClinic.formatted_phone_number}
-                  </Typography>
+
                   <Typography variant="body1">
                     <a
                       href={getGoogleMapsUrl(selectedClinic.place_id)}

@@ -21,7 +21,7 @@ export default function PrescriptionsPatient() {
   const [prescriptionsRetrieved, setPrescriptionsRetrieved] = useState([]);
   const [patientName, setPatientName] = useState("");
   const [patientDrugAllergy, setPatientDrugAllergy] = useState("");
-  const patientLogin = localStorage.getItem("patientid")
+  const patientLogin = localStorage.getItem("patientid");
 
   useEffect(() => {
     if (user && !accessToken) {
